@@ -5,23 +5,68 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>GlobalTech Trading Simulation</title>
 <style>
-  /* ── TOKENS ─────────────────────────────────────────────── */
+  /* ── TOKENS ───────────────────────────────────────────────
+     Helles Design als Standard; im Dunkelmodus des Geräts
+     (prefers-color-scheme: dark) werden die Farben automatisch
+     auf die dunkle Variante umgestellt. */
   :root {
-    --bg:        #0a0e17;
-    --surface:   #111827;
-    --card:      #1a2235;
-    --border:    #243048;
-    --accent:    #00d4aa;
-    --accent2:   #3b82f6;
-    --danger:    #ef4444;
-    --warn:      #f59e0b;
-    --green:     #10b981;
-    --text:      #e2e8f0;
-    --muted:     #64748b;
-    --radius:    10px;
-    --font-mono: 'Courier New', monospace;
-    --font-main: system-ui, -apple-system, sans-serif;
-    --transition: 0.2s ease;
+    color-scheme: light;
+    --bg:        #f5f4f0;
+    --surface:   #fffffe;
+    --card:      #f1f0eb;
+    --border:    #e4e2db;
+    --text:      #1d1c1a;
+    --muted:     #6b6962;
+    --faint:     #9a978e;
+    --accent:    #0f766e;
+    --accent2:   #2a78d6;
+    --green:     #1a7f4b;
+    --danger:    #c0392b;
+    --warn:      #b7791f;
+    --on-green:  #ffffff;
+    --on-danger: #ffffff;
+    --btn-bg:    #1d1c1a;
+    --btn-fg:    #ffffff;
+    --chart-line: #2a78d6;
+    --chart-grid: #ecebe6;
+    --tint-green:  rgba(26,127,75,.10);
+    --tint-danger: rgba(192,57,43,.10);
+    --tint-blue:   rgba(42,120,214,.10);
+    --tint-violet: rgba(109,74,196,.10);
+    --violet:    #6d4ac4;
+    --shadow:    0 1px 2px rgba(29,28,26,.04), 0 4px 16px rgba(29,28,26,.04);
+    --radius:    14px;
+    --font-main: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --transition: .18s ease;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      color-scheme: dark;
+      --bg:        #141413;
+      --surface:   #1c1c1a;
+      --card:      #252523;
+      --border:    #33322f;
+      --text:      #f2f1ec;
+      --muted:     #a3a198;
+      --faint:     #7d7b73;
+      --accent:    #5eb8a8;
+      --accent2:   #3987e5;
+      --green:     #4cc38a;
+      --danger:    #f07167;
+      --warn:      #e0a340;
+      --on-green:  #10231a;
+      --on-danger: #2a0f0c;
+      --btn-bg:    #f2f1ec;
+      --btn-fg:    #1c1c1a;
+      --chart-line: #3987e5;
+      --chart-grid: #2a2a27;
+      --tint-green:  rgba(76,195,138,.12);
+      --tint-danger: rgba(240,113,103,.12);
+      --tint-blue:   rgba(57,135,229,.14);
+      --tint-violet: rgba(160,132,232,.14);
+      --violet:    #a084e8;
+      --shadow:    none;
+    }
   }
 
   /* ── RESET ────────────────────────────────────────────────── */
@@ -30,8 +75,10 @@
     background: var(--bg);
     color: var(--text);
     font-family: var(--font-main);
+    line-height: 1.5;
     min-height: 100vh;
     overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
   }
   button { cursor: pointer; font-family: inherit; }
   /* Verhindert das Hineinzoomen bei schnellem Doppeltippen auf dem Handy.
@@ -41,52 +88,38 @@
   }
   button { -webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: transparent; }
   input, select { font-family: inherit; }
+  .num { font-variant-numeric: tabular-nums; }
 
   /* ── PHASES ─────────────────────────────────────────────── */
   .phase { display: none; }
   .phase.active { display: flex; flex-direction: column; }
 
-  /* ── PHASE 1 – INTRO ────────────────────────────────────── */
-  #phase1 {
+  /* ── PHASE 0/1 – INTRO ──────────────────────────────────── */
+  #phase0, #phase1 {
     min-height: 100vh;
     align-items: center;
     justify-content: center;
-    padding: 2rem;
-    background: radial-gradient(ellipse at 50% 0%, #0f1f3d 0%, var(--bg) 70%);
+    padding: 2rem 1rem;
   }
   .intro-card {
-    max-width: 640px;
+    max-width: 620px;
     width: 100%;
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 3rem 2.5rem;
-    text-align: center;
+    border-radius: 20px;
+    padding: 2.6rem 2.4rem;
+    box-shadow: var(--shadow);
   }
-  .logo-line {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.6rem;
-    margin-bottom: 2rem;
-  }
-  .logo-dot {
-    width: 10px; height: 10px;
-    border-radius: 50%;
-    background: var(--accent);
-    box-shadow: 0 0 12px var(--accent);
-    animation: pulse 2s infinite;
-  }
-  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+  .logo-line { margin-bottom: 1.4rem; }
   .logo-label {
     font-size: .75rem;
-    letter-spacing: .15em;
+    letter-spacing: .08em;
     text-transform: uppercase;
     color: var(--accent);
     font-weight: 600;
   }
   .intro-card h1 {
-    font-size: clamp(1.6rem, 4vw, 2.2rem);
+    font-size: clamp(1.55rem, 4.5vw, 2.1rem);
     font-weight: 700;
     line-height: 1.2;
     margin-bottom: 1rem;
@@ -95,81 +128,115 @@
   .intro-card h1 span { color: var(--accent); }
   .intro-card p {
     color: var(--muted);
-    line-height: 1.7;
+    line-height: 1.65;
     margin-bottom: 1rem;
-    font-size: .95rem;
+    font-size: .98rem;
   }
+  .intro-card p strong { color: var(--text); }
   .info-box {
-    background: #0d1a2e;
-    border: 1px solid var(--border);
-    border-left: 3px solid var(--accent2);
-    border-radius: var(--radius);
+    background: var(--card);
+    border-radius: 12px;
     padding: 1rem 1.2rem;
     text-align: left;
-    margin: 1.5rem 0;
-    font-size: .87rem;
+    margin: 1.4rem 0;
+    font-size: .9rem;
     color: var(--muted);
     line-height: 1.6;
   }
   .info-box strong { color: var(--text); }
+  .info-title {
+    display: block;
+    color: var(--text);
+    font-weight: 600;
+    margin-bottom: .25rem;
+  }
+
+  /* Startdepot-Übersicht (Intro + Übergangsfenster) */
+  .start-depot {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: .6rem;
+    margin: 1.4rem 0;
+  }
+  .depot-item {
+    background: var(--card);
+    border-radius: 12px;
+    padding: .9rem 1rem;
+    text-align: left;
+  }
+  .depot-item .dl {
+    font-size: .78rem;
+    color: var(--muted);
+    margin-bottom: .15rem;
+  }
+  .depot-item .dv {
+    font-size: 1.25rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    color: var(--text);
+  }
+  .depot-item .ds {
+    font-size: .8rem;
+    color: var(--muted);
+    margin-top: .1rem;
+  }
+
   .btn-primary {
     width: 100%;
-    padding: .9rem 1.5rem;
-    background: var(--accent);
-    color: #000;
+    padding: .95rem 1.5rem;
+    background: var(--btn-bg);
+    color: var(--btn-fg);
     border: none;
-    border-radius: var(--radius);
+    border-radius: 12px;
     font-size: 1rem;
-    font-weight: 700;
-    letter-spacing: .03em;
+    font-weight: 600;
     transition: var(--transition);
-    margin-top: 1rem;
+    margin-top: .8rem;
   }
-  .btn-primary:hover { filter: brightness(1.1); transform: translateY(-1px); }
-  .btn-primary:active { transform: translateY(0); }
+  .btn-primary:hover { opacity: .88; }
+  .btn-primary:active { transform: scale(.99); }
 
   /* ── PHASE 2 – DEMO DATA ─────────────────────────────────── */
   #phase2 {
     min-height: 100vh;
     align-items: center;
     justify-content: center;
-    padding: 2rem;
-    background: radial-gradient(ellipse at 50% 0%, #0f1f3d 0%, var(--bg) 70%);
+    padding: 2rem 1rem;
   }
   .demo-card {
     max-width: 500px;
     width: 100%;
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 2.5rem 2rem;
+    border-radius: 20px;
+    padding: 2.4rem 2rem;
+    box-shadow: var(--shadow);
   }
   .demo-card h2 {
     font-size: 1.4rem;
     font-weight: 700;
+    letter-spacing: -.01em;
     margin-bottom: .4rem;
   }
   .demo-card .sub {
     color: var(--muted);
-    font-size: .88rem;
-    margin-bottom: 2rem;
+    font-size: .9rem;
+    margin-bottom: 1.8rem;
   }
   .field { margin-bottom: 1.2rem; }
   .field label {
     display: block;
-    font-size: .82rem;
+    font-size: .88rem;
     font-weight: 600;
-    letter-spacing: .06em;
-    text-transform: uppercase;
-    color: var(--muted);
+    color: var(--text);
     margin-bottom: .4rem;
   }
   .field select, .field input {
     width: 100%;
-    padding: .7rem 1rem;
-    background: var(--card);
+    padding: .75rem 1rem;
+    background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 8px;
+    border-radius: 10px;
     color: var(--text);
     font-size: 16px;
     transition: var(--transition);
@@ -178,22 +245,22 @@
   .field select:focus, .field input:focus {
     outline: none;
     border-color: var(--accent);
-    box-shadow: 0 0 0 2px rgba(0,212,170,.15);
+    box-shadow: 0 0 0 3px var(--tint-blue);
   }
   .optional-tag {
-    font-size: .72rem;
+    font-size: .74rem;
+    font-weight: 500;
     color: var(--muted);
-    background: var(--card);
-    padding: .15rem .4rem;
-    border-radius: 4px;
-    margin-left: .4rem;
+    margin-left: .3rem;
   }
 
   /* ── PHASE 3 – SIMULATION ───────────────────────────────── */
   #phase3 {
     min-height: 100vh;
     padding: 1rem;
-    flex-direction: column;
+    max-width: 980px;
+    width: 100%;
+    margin: 0 auto;
   }
   .sim-header {
     display: flex;
@@ -203,141 +270,211 @@
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    margin-bottom: 1rem;
+    margin-bottom: .8rem;
     flex-wrap: wrap;
     gap: .5rem;
+    box-shadow: var(--shadow);
   }
   .round-badge {
-    font-size: .8rem;
-    font-weight: 700;
-    letter-spacing: .1em;
-    text-transform: uppercase;
-    color: var(--accent);
+    font-size: .92rem;
+    font-weight: 600;
+    color: var(--text);
   }
-  .timer-wrap { display: flex; align-items: center; gap: .8rem; flex: 1; justify-content: flex-end; }
+  .timer-wrap { display: flex; align-items: center; gap: .7rem; flex: 1; justify-content: flex-end; }
   .timer-wrap.paused .timer-label { color: var(--muted); }
-  .timer-wrap.paused .timer-label::after { content: " ⏸ pausiert"; font-size: .65rem; letter-spacing: 0; }
-  .timer-wrap.paused .timer-bar { background: var(--muted) !important; }
+  .timer-wrap.paused .timer-label::after { content: " pausiert"; font-size: .7rem; font-weight: 500; }
+  .timer-wrap.paused .timer-bar { background: var(--faint) !important; }
   .timer-label {
-    font-family: var(--font-mono);
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: var(--warn);
+    font-size: .95rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    color: var(--muted);
     min-width: 3ch;
     text-align: right;
   }
+  .timer-label::after { content: " s"; font-weight: 500; }
   .timer-bar-bg {
     flex: 1;
-    max-width: 200px;
-    height: 6px;
+    max-width: 180px;
+    height: 4px;
     background: var(--card);
     border-radius: 99px;
     overflow: hidden;
   }
   .timer-bar {
     height: 100%;
-    background: var(--warn);
+    background: var(--faint);
     border-radius: 99px;
     transition: width .9s linear, background .5s;
   }
   .sim-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
-    margin-bottom: 1rem;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr);
+    gap: .8rem;
+    margin-bottom: .8rem;
   }
-  @media(max-width:600px) { .sim-grid { grid-template-columns: 1fr; } }
+  @media(max-width:700px) { .sim-grid { grid-template-columns: 1fr; } }
   .card {
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    padding: 1.2rem 1.4rem;
+    padding: 1.2rem 1.3rem;
+    box-shadow: var(--shadow);
   }
   .card-label {
-    font-size: .72rem;
-    font-weight: 700;
-    letter-spacing: .1em;
-    text-transform: uppercase;
+    font-size: .8rem;
+    font-weight: 600;
     color: var(--muted);
     margin-bottom: .8rem;
+  }
+  .card-hint {
+    font-size: .8rem;
+    color: var(--muted);
+    background: var(--card);
+    border-radius: 8px;
+    padding: .45rem .65rem;
+    margin: -.2rem 0 .8rem;
   }
   .stat-row {
     display: flex;
     justify-content: space-between;
     align-items: baseline;
-    margin-bottom: .5rem;
+    gap: .8rem;
+    padding: .38rem 0;
+    border-bottom: 1px solid var(--chart-grid);
   }
-  .stat-name { font-size: .85rem; color: var(--muted); }
+  .stat-name { font-size: .88rem; color: var(--muted); }
   .stat-val {
-    font-family: var(--font-mono);
-    font-size: 1rem;
-    font-weight: 700;
+    font-size: .95rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+  }
+  .total-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: .8rem;
+    padding-top: .7rem;
+  }
+  .total-row .stat-name { color: var(--text); font-weight: 600; }
+  .total-row .stat-name small {
+    display: block;
+    font-size: .76rem;
+    font-weight: 400;
+    color: var(--muted);
   }
   .total-val {
-    font-family: var(--font-mono);
-    font-size: 1.4rem;
+    font-size: 1.3rem;
     font-weight: 700;
-    color: var(--accent);
-    margin-top: .4rem;
+    font-variant-numeric: tabular-nums;
+    color: var(--text);
+  }
+  .price-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: .3rem .8rem;
+    margin-bottom: .4rem;
   }
   .price-big {
-    font-family: var(--font-mono);
-    font-size: 2rem;
+    font-size: 1.9rem;
     font-weight: 700;
-    line-height: 1;
-    margin-bottom: .3rem;
+    letter-spacing: -.02em;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.1;
   }
   .price-change {
-    font-size: .9rem;
-    font-weight: 700;
-    font-family: var(--font-mono);
+    font-size: .88rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
   }
   .green { color: var(--green); }
   .red   { color: var(--danger); }
   .grey  { color: var(--muted); }
 
-  /* News ticker */
+  /* ── CHART ──────────────────────────────────────────────── */
+  .chart-wrap { position: relative; margin-top: .3rem; }
+  .chart-wrap svg { display: block; width: 100%; overflow: visible; }
+  .chart-wrap .axis-text {
+    font-size: 11px;
+    fill: var(--faint);
+    font-family: var(--font-main);
+    font-variant-numeric: tabular-nums;
+  }
+  .chart-wrap .ref-text {
+    font-size: 11px;
+    fill: var(--muted);
+    font-family: var(--font-main);
+    font-weight: 600;
+  }
+  .chart-tip {
+    position: absolute;
+    top: 0;
+    pointer-events: none;
+    background: var(--btn-bg);
+    color: var(--btn-fg);
+    font-size: .78rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    padding: .3rem .55rem;
+    border-radius: 7px;
+    white-space: nowrap;
+    transform: translate(-50%, calc(-100% - 12px));
+    opacity: 0;
+    transition: opacity .12s;
+  }
+  .chart-tip.show { opacity: 1; }
+  .chart-legend {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    font-size: .76rem;
+    color: var(--muted);
+    margin-top: .5rem;
+  }
+  .chart-legend span { display: inline-flex; align-items: center; gap: .35rem; }
+  .chart-legend i {
+    display: inline-block;
+    width: 16px;
+    height: 0;
+    border-top: 2px solid var(--chart-line);
+  }
+  .chart-legend i.ref { border-top: 2px dashed var(--muted); }
+
+  /* News */
   .news-box {
     background: var(--surface);
     border: 1px solid var(--border);
+    border-left: 4px solid var(--faint);
     border-radius: var(--radius);
-    padding: 1.2rem 1.4rem;
-    margin-bottom: 1rem;
-    transition: border-color .4s, box-shadow .4s;
+    padding: 1.1rem 1.3rem;
+    margin-bottom: .8rem;
+    box-shadow: var(--shadow);
   }
-  .news-box.panic {
-    border-color: var(--danger);
-    box-shadow: 0 0 20px rgba(239,68,68,.15);
-    animation: flicker 1.2s infinite;
-  }
-  .news-box.greed {
-    border-color: var(--green);
-    box-shadow: 0 0 20px rgba(16,185,129,.12);
-  }
-  .news-box.recover {
-    border-color: var(--accent2);
-    box-shadow: 0 0 20px rgba(59,130,246,.12);
-  }
-  @keyframes flicker { 0%,100%{opacity:1} 50%{opacity:.85} }
+  .news-box.panic   { border-left-color: var(--danger); }
+  .news-box.greed   { border-left-color: var(--green); }
+  .news-box.recover { border-left-color: var(--accent2); }
+  .news-box.practice { border-left-color: var(--violet); }
   .news-tag {
     display: inline-block;
-    font-size: .68rem;
+    font-size: .7rem;
     font-weight: 700;
-    letter-spacing: .12em;
+    letter-spacing: .06em;
     text-transform: uppercase;
-    padding: .2rem .5rem;
-    border-radius: 4px;
-    margin-bottom: .6rem;
+    padding: .18rem .5rem;
+    border-radius: 6px;
+    margin-bottom: .55rem;
   }
-  .news-tag.breaking { background: var(--danger); color: #fff; }
-  .news-tag.hype    { background: var(--green); color: #000; }
-  .news-tag.update  { background: var(--accent2); color: #fff; }
-  .news-tag.neutral { background: var(--muted); color: #fff; }
-  .news-tag.final   { background: #7c3aed; color: #fff; }
-  .news-tag.practice { background: #7c3aed; color: #fff; }
-  .news-box.practice {
-    border-color: #7c3aed;
-    box-shadow: 0 0 20px rgba(124,58,237,.15);
+  .news-tag.breaking { background: var(--tint-danger); color: var(--danger); }
+  .news-tag.hype     { background: var(--tint-green);  color: var(--green); }
+  .news-tag.update   { background: var(--tint-blue);   color: var(--accent2); }
+  .news-tag.neutral  { background: var(--card);        color: var(--muted); }
+  .news-tag.final, .news-tag.practice { background: var(--tint-violet); color: var(--violet); }
+  .news-text {
+    font-size: 1rem;
+    line-height: 1.6;
   }
   .practice-bar {
     display: flex;
@@ -345,40 +482,35 @@
     justify-content: space-between;
     gap: .8rem;
     flex-wrap: wrap;
-    background: rgba(124,58,237,.1);
-    border: 1px solid #7c3aed;
+    background: var(--tint-violet);
     border-radius: var(--radius);
-    padding: .7rem 1rem;
-    margin-bottom: 1rem;
-    font-size: .85rem;
+    padding: .75rem 1rem;
+    margin-bottom: .8rem;
+    font-size: .88rem;
+    color: var(--text);
   }
-  .practice-bar strong { color: #b491f0; }
+  .practice-bar strong { color: var(--violet); }
   .btn-skip-practice {
     padding: .5rem .9rem;
-    background: transparent;
-    border: 1px solid #7c3aed;
-    border-radius: 8px;
-    color: #b491f0;
-    font-size: .8rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--text);
+    font-size: .82rem;
     font-weight: 600;
     white-space: nowrap;
     transition: var(--transition);
   }
-  .btn-skip-practice:hover { background: #7c3aed; color: #fff; }
-  .news-text {
-    font-size: .95rem;
-    line-height: 1.6;
-    font-style: italic;
-  }
+  .btn-skip-practice:hover { border-color: var(--violet); color: var(--violet); }
 
   /* Zwangswahl (Prospect-Theory-Runden) */
-  .forced-box { margin-bottom: 1.2rem; }
+  .forced-box { margin-bottom: 1rem; }
   .forced-q {
-    font-size: .88rem;
+    font-size: .9rem;
     color: var(--muted);
-    margin-bottom: .9rem;
+    margin-bottom: .7rem;
   }
-  .forced-opts { display: grid; gap: .8rem; }
+  .forced-opts { display: grid; gap: .7rem; }
   @media (min-width: 700px) { .forced-opts { grid-template-columns: 1fr 1fr; } }
   .forced-btn {
     text-align: left;
@@ -389,97 +521,75 @@
     cursor: pointer;
     transition: var(--transition);
     width: 100%;
-  }
-  .forced-btn:hover {
-    border-color: var(--accent);
-    transform: translateY(-2px);
-  }
-  .forced-btn .ft {
-    font-size: .95rem;
-    font-weight: 700;
     color: var(--text);
-    margin-bottom: .35rem;
+    box-shadow: var(--shadow);
+  }
+  .forced-btn:hover { border-color: var(--text); }
+  .forced-btn .ft {
+    font-size: .98rem;
+    font-weight: 700;
+    margin-bottom: .3rem;
   }
   .forced-btn .fx {
-    font-size: .85rem;
+    font-size: .88rem;
     color: var(--muted);
     line-height: 1.55;
   }
 
-  /* Entscheidungsstruktur (v.a. Prospect-Theory-Runden) */
+  /* Entscheidungsstruktur */
   .choice-box {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-left: 3px solid var(--accent2);
+    background: var(--card);
     border-radius: var(--radius);
     padding: 1rem 1.2rem;
-    margin-bottom: 1rem;
-  }
-  .choice-title {
-    font-size: .72rem;
-    font-weight: 700;
-    letter-spacing: .1em;
-    text-transform: uppercase;
-    color: var(--muted);
     margin-bottom: .8rem;
   }
-  .choice-item { margin-bottom: .7rem; }
-  .choice-item:last-child { margin-bottom: 0; }
-  .choice-lbl {
-    font-size: .87rem;
-    font-weight: 700;
-    color: var(--text);
-    margin-bottom: .15rem;
-  }
-  .choice-txt {
-    font-size: .84rem;
+  .choice-title {
+    font-size: .8rem;
+    font-weight: 600;
     color: var(--muted);
-    line-height: 1.5;
+    margin-bottom: .6rem;
   }
+  .choice-item { margin-bottom: .6rem; }
+  .choice-item:last-child { margin-bottom: 0; }
+  .choice-lbl { font-size: .9rem; font-weight: 600; margin-bottom: .1rem; }
+  .choice-txt { font-size: .87rem; color: var(--muted); line-height: 1.5; }
 
   /* Action area */
   .action-area {
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    padding: 1.2rem 1.4rem;
+    padding: 1.1rem 1.3rem;
+    box-shadow: var(--shadow);
   }
   .action-label {
-    font-size: .72rem;
-    font-weight: 700;
-    letter-spacing: .1em;
-    text-transform: uppercase;
+    font-size: .8rem;
+    font-weight: 600;
     color: var(--muted);
-    margin-bottom: 1rem;
+    margin-bottom: .8rem;
   }
-  .action-btns {
-    display: flex;
-    gap: .8rem;
-    flex-wrap: wrap;
-  }
+  .action-btns { display: flex; gap: .6rem; flex-wrap: wrap; }
   .btn-buy, .btn-sell, .btn-hold {
     flex: 1;
-    min-width: 120px;
-    padding: .75rem 1rem;
+    min-width: 110px;
+    padding: .85rem 1rem;
     border: none;
-    border-radius: var(--radius);
-    font-size: .9rem;
-    font-weight: 700;
-    letter-spacing: .04em;
+    border-radius: 12px;
+    font-size: .95rem;
+    font-weight: 600;
     transition: var(--transition);
   }
-  .btn-buy   { background: var(--green);  color: #000; }
-  .btn-sell  { background: var(--danger); color: #fff; }
+  .btn-buy   { background: var(--green);  color: var(--on-green); }
+  .btn-sell  { background: var(--danger); color: var(--on-danger); }
   .btn-hold  { background: var(--card); border: 1px solid var(--border); color: var(--text); }
-  .btn-buy:hover  { filter: brightness(1.1); transform: translateY(-1px); }
-  .btn-sell:hover { filter: brightness(1.1); transform: translateY(-1px); }
-  .btn-hold:hover { border-color: var(--muted); transform: translateY(-1px); }
+  .btn-buy:hover, .btn-sell:hover { opacity: .88; }
+  .btn-hold:hover { border-color: var(--muted); }
 
   /* Trade modal */
   .modal-overlay {
     display: none;
     position: fixed; inset: 0;
-    background: rgba(0,0,0,.7);
+    background: rgba(20,20,19,.45);
     z-index: 100;
     align-items: center;
     justify-content: center;
@@ -489,118 +599,108 @@
   .modal {
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 2rem;
-    max-width: 380px;
+    border-radius: 20px;
+    padding: 1.8rem;
+    max-width: 400px;
     width: 100%;
+    box-shadow: 0 20px 60px rgba(0,0,0,.18);
   }
-  .modal h3 { font-size: 1.1rem; margin-bottom: 1rem; }
+  .modal h3 { font-size: 1.15rem; font-weight: 700; margin-bottom: 1rem; }
   .modal-row {
     display: flex;
     justify-content: space-between;
-    font-size: .85rem;
+    font-size: .88rem;
     color: var(--muted);
-    margin-bottom: .4rem;
+    margin-bottom: .35rem;
   }
-  .modal-row span:last-child { color: var(--text); font-family: var(--font-mono); }
+  .modal-row span:last-child { color: var(--text); font-weight: 600; font-variant-numeric: tabular-nums; }
   .qty-control {
     display: flex;
     align-items: center;
-    gap: .6rem;
-    margin: 1.2rem 0;
+    gap: .5rem;
+    margin: 1.1rem 0;
   }
   .qty-btn {
-    width: 36px; height: 36px;
+    width: 44px; height: 44px;
     background: var(--card);
     border: 1px solid var(--border);
-    border-radius: 6px;
+    border-radius: 10px;
     color: var(--text);
     font-size: 1.2rem;
     display: flex; align-items: center; justify-content: center;
     transition: var(--transition);
   }
-  .qty-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .qty-btn:hover { border-color: var(--muted); }
   .qty-input {
     flex: 1;
+    min-width: 0;
+    height: 44px;
     text-align: center;
-    background: var(--card);
+    background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 6px;
+    border-radius: 10px;
     color: var(--text);
     padding: .5rem;
     font-size: max(16px, 1.1rem);
-    font-family: var(--font-mono);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
   }
   .qty-input:focus { outline: none; border-color: var(--accent); }
-  .modal-presets {
-    display: flex; gap: .5rem; margin-bottom: 1.2rem; flex-wrap: wrap;
-  }
+  .modal-presets { display: flex; gap: .5rem; margin-bottom: 1rem; flex-wrap: wrap; }
   .preset-btn {
     flex: 1;
     min-width: 60px;
-    padding: .4rem .6rem;
-    background: var(--card);
+    padding: .45rem .6rem;
+    background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 6px;
+    border-radius: 99px;
     color: var(--muted);
-    font-size: .8rem;
+    font-size: .82rem;
     font-weight: 600;
     transition: var(--transition);
   }
-  .preset-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .preset-btn:hover { border-color: var(--text); color: var(--text); }
   .cost-preview {
     background: var(--card);
-    border-radius: 6px;
-    padding: .8rem 1rem;
-    font-size: .85rem;
-    margin-bottom: 1.2rem;
+    border-radius: 12px;
+    padding: .85rem 1rem;
+    font-size: .88rem;
+    margin-bottom: 1rem;
   }
-  .cost-preview .cost-row {
-    display: flex; justify-content: space-between; margin-bottom: .3rem;
-  }
+  .cost-preview .cost-row { display: flex; justify-content: space-between; margin-bottom: .3rem; }
   .cost-preview .cost-label { color: var(--muted); }
-  .cost-preview .cost-val { font-family: var(--font-mono); font-weight: 700; }
+  .cost-preview .cost-val { font-weight: 600; font-variant-numeric: tabular-nums; }
   .cost-preview .cost-row.highlight {
     margin-top: .5rem;
-    padding-top: .7rem;
-    border-top: 1px dashed var(--border);
+    padding-top: .6rem;
+    border-top: 1px solid var(--border);
   }
-  .cost-preview .cost-row.highlight .cost-label { font-size: .9rem; font-weight: 700; color: var(--text); }
-  .cost-preview .cost-row.highlight .cost-val { font-size: 1.35rem; }
+  .cost-preview .cost-row.highlight .cost-label { font-weight: 600; color: var(--text); }
+  .cost-preview .cost-row.highlight .cost-val { font-size: 1.2rem; font-weight: 700; }
   .modal-actions { display: flex; gap: .6rem; }
   .btn-cancel {
     flex: 1;
-    padding: .7rem;
+    padding: .8rem;
     background: var(--card);
     border: 1px solid var(--border);
-    border-radius: 8px;
+    border-radius: 12px;
     color: var(--text);
-    font-size: .9rem;
+    font-size: .92rem;
     font-weight: 600;
   }
-  .btn-confirm-buy {
+  .btn-confirm-buy, .btn-confirm-sell {
     flex: 2;
-    padding: .7rem;
-    background: var(--green);
+    padding: .8rem;
     border: none;
-    border-radius: 8px;
-    color: #000;
-    font-size: .9rem;
-    font-weight: 700;
+    border-radius: 12px;
+    font-size: .92rem;
+    font-weight: 600;
   }
-  .btn-confirm-sell {
-    flex: 2;
-    padding: .7rem;
-    background: var(--danger);
-    border: none;
-    border-radius: 8px;
-    color: #fff;
-    font-size: .9rem;
-    font-weight: 700;
-  }
+  .btn-confirm-buy  { background: var(--green);  color: var(--on-green); }
+  .btn-confirm-sell { background: var(--danger); color: var(--on-danger); }
   .error-msg {
     color: var(--danger);
-    font-size: .82rem;
+    font-size: .84rem;
     margin-top: .4rem;
     min-height: 1.2em;
   }
@@ -610,58 +710,64 @@
     min-height: 100vh;
     align-items: center;
     justify-content: center;
-    padding: 2rem;
-    background: radial-gradient(ellipse at 50% 20%, #0a1f3d 0%, var(--bg) 70%);
+    padding: 2rem 1rem;
   }
   .end-card {
     max-width: 640px;
     width: 100%;
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 3rem 2.5rem;
-    text-align: center;
+    border-radius: 20px;
+    padding: 2.6rem 2.4rem;
+    box-shadow: var(--shadow);
   }
-  .end-card .emoji { font-size: 3rem; margin-bottom: 1rem; }
-  .end-card h2 { font-size: 1.7rem; font-weight: 700; margin-bottom: .5rem; }
-  .end-card p  { color: var(--muted); font-size: .9rem; line-height: 1.7; }
-  .result-box {
-    background: var(--card);
+  .end-card h2 { font-size: 1.6rem; font-weight: 700; letter-spacing: -.01em; margin-bottom: .5rem; }
+  .end-card > p { color: var(--muted); font-size: .95rem; line-height: 1.65; }
+  .end-chart {
+    margin: 1.4rem 0 0;
+    padding: 1rem 1.1rem;
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    padding: 1.2rem;
-    margin: 1.5rem 0;
+  }
+  .result-box {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: .6rem 1.1rem;
+    margin: 1.2rem 0;
     text-align: left;
   }
   .result-row {
     display: flex;
     justify-content: space-between;
     align-items: baseline;
-    padding: .5rem 0;
+    gap: .8rem;
+    padding: .55rem 0;
     border-bottom: 1px solid var(--border);
-    font-size: .9rem;
+    font-size: .92rem;
   }
   .result-row:last-child { border-bottom: none; }
   .result-row .rl { color: var(--muted); }
-  .result-row .rv { font-family: var(--font-mono); font-weight: 700; }
+  .result-row .rv { font-weight: 600; font-variant-numeric: tabular-nums; text-align: right; }
+  .result-row.strong .rl { color: var(--text); font-weight: 600; }
+  .result-row.strong .rv { font-weight: 700; font-size: 1.05rem; }
   .result-row .rv.pos { color: var(--green); }
   .result-row .rv.neg { color: var(--danger); }
 
   /* Send status */
   .send-status {
     margin: 1rem 0;
-    padding: .8rem 1.2rem;
-    border-radius: var(--radius);
-    font-size: .88rem;
+    padding: .8rem 1.1rem;
+    border-radius: 12px;
+    font-size: .9rem;
     display: none;
   }
-  .send-status.sending { display: block; background: rgba(59,130,246,.1); border: 1px solid var(--accent2); color: var(--accent2); }
-  .send-status.ok  { display: block; background: rgba(16,185,129,.1); border: 1px solid var(--green); color: var(--green); }
-  .send-status.err { display: block; background: rgba(239,68,68,.1); border: 1px solid var(--danger); color: var(--danger); }
+  .send-status.sending { display: block; background: var(--tint-blue);   color: var(--accent2); }
+  .send-status.ok      { display: block; background: var(--tint-green);  color: var(--green); }
+  .send-status.err     { display: block; background: var(--tint-danger); color: var(--danger); }
   .admin-only { display: none !important; }
   body.is-admin .admin-only { display: block !important; }
   body.is-admin .researcher-actions.admin-only, body.is-admin .researcher-actions { display: flex !important; }
-  .send-status .detail { display: block; margin-top: .35rem; font-size: .75rem; opacity: .8; }
+  .send-status .detail { display: block; margin-top: .35rem; font-size: .76rem; opacity: .8; }
 
   /* researcher section */
   .researcher-section {
@@ -671,101 +777,77 @@
     text-align: left;
   }
   .researcher-label {
-    font-size: .72rem;
-    font-weight: 700;
-    letter-spacing: .1em;
-    text-transform: uppercase;
+    font-size: .8rem;
+    font-weight: 600;
     color: var(--muted);
     margin-bottom: .6rem;
   }
   .researcher-actions { display: flex; gap: .6rem; flex-wrap: wrap; }
-  .btn-csv {
+  .btn-csv, .btn-clear {
     padding: .7rem 1.2rem;
-    background: var(--card);
-    border: 1px solid var(--accent);
-    border-radius: 8px;
-    color: var(--accent);
-    font-size: .85rem;
-    font-weight: 700;
+    background: var(--surface);
+    border-radius: 10px;
+    font-size: .88rem;
+    font-weight: 600;
     transition: var(--transition);
   }
-  .btn-csv:hover { background: var(--accent); color: #000; }
-  .btn-clear {
-    padding: .7rem 1.2rem;
-    background: var(--card);
-    border: 1px solid var(--danger);
-    border-radius: 8px;
-    color: var(--danger);
-    font-size: .85rem;
-    font-weight: 700;
-    transition: var(--transition);
-  }
-  .btn-clear:hover { background: var(--danger); color: #fff; }
+  .btn-csv   { border: 1px solid var(--accent); color: var(--accent); }
+  .btn-clear { border: 1px solid var(--danger); color: var(--danger); }
+  .btn-csv:hover, .btn-clear:hover { background: var(--card); }
   .count-badge {
     display: inline-block;
     background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 6px;
+    border-radius: 8px;
     padding: .3rem .7rem;
-    font-size: .82rem;
+    font-size: .84rem;
     color: var(--muted);
     margin-bottom: .8rem;
   }
-  .count-badge span { color: var(--accent); font-weight: 700; }
-
-  /* Decorative chart lines */
-  .chart-deco {
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    pointer-events: none;
-    opacity: .04;
-    overflow: hidden;
-  }
+  .count-badge span { color: var(--text); font-weight: 700; }
 
   /* Übergang Übung → echte Simulation */
-  .start-modal { text-align: center; }
-  .start-emoji { font-size: 2.4rem; margin-bottom: .6rem; }
-  .start-modal h3 { margin-bottom: .8rem; }
+  .start-modal h3 { margin-bottom: .7rem; }
   .start-text {
     color: var(--muted);
-    font-size: .9rem;
-    line-height: 1.65;
+    font-size: .92rem;
+    line-height: 1.6;
     margin-bottom: .8rem;
   }
   .start-text strong { color: var(--text); }
+  .start-modal .start-depot { margin: 1rem 0; }
   .btn-start-real {
     width: 100%;
-    margin-top: .8rem;
-    padding: .85rem 1.5rem;
-    background: var(--accent);
-    color: #000;
+    margin-top: .6rem;
+    padding: .9rem 1.5rem;
+    background: var(--btn-bg);
+    color: var(--btn-fg);
     border: none;
-    border-radius: var(--radius);
-    font-size: .95rem;
-    font-weight: 700;
-    letter-spacing: .03em;
+    border-radius: 12px;
+    font-size: .98rem;
+    font-weight: 600;
     transition: var(--transition);
   }
-  .btn-start-real:hover { filter: brightness(1.1); transform: translateY(-1px); }
+  .btn-start-real:hover { opacity: .88; }
 
   /* ── TOASTS ─────────────────────────────────────────────── */
   .toast {
     position: fixed;
     bottom: 1.5rem; right: 1.5rem;
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: .9rem 1.3rem;
-    font-size: .88rem;
+    background: var(--btn-bg);
+    color: var(--btn-fg);
+    border-radius: 12px;
+    padding: .85rem 1.2rem;
+    font-size: .9rem;
+    font-weight: 500;
     z-index: 200;
-    transform: translateY(100px);
+    transform: translateY(20px);
     opacity: 0;
-    transition: .35s cubic-bezier(.34,1.56,.64,1);
-    max-width: 300px;
+    pointer-events: none;
+    transition: transform .25s ease, opacity .25s ease;
+    max-width: 320px;
+    box-shadow: 0 10px 30px rgba(0,0,0,.18);
   }
   .toast.show { transform: translateY(0); opacity: 1; }
-  .toast.t-green { border-color: var(--green); }
-  .toast.t-red   { border-color: var(--danger); }
 
   /* utils */
   .mt1 { margin-top: .8rem; }
@@ -779,9 +861,11 @@
     #phase0, #phase1, #phase2, #phase4 { padding: .75rem .5rem; }
     .intro-card, .demo-card, .end-card {
       padding: 1.6rem 1rem;
-      border-radius: 12px;
+      border-radius: 16px;
     }
     .info-box { padding: .85rem .9rem; }
+    .start-depot { gap: .5rem; }
+    .depot-item { padding: .8rem .85rem; }
     #phase3 { padding: .5rem; }
     .sim-header { padding: .7rem .9rem; margin-bottom: .6rem; }
     .sim-grid { gap: .6rem; margin-bottom: .6rem; }
@@ -792,19 +876,19 @@
     .forced-btn { padding: 1rem .9rem; }
     .modal-overlay { padding: .5rem; }
     .modal { padding: 1.4rem 1rem; }
-    .result-box { padding: .9rem; }
+    .end-chart { padding: .8rem .7rem; }
+    .result-box { padding: .5rem .9rem; }
     .toast { left: .75rem; right: .75rem; bottom: .75rem; max-width: none; }
   }
 </style>
 </head>
 <body>
 
-<!-- ══════════════════════════════════════════ PHASE 1 ══ -->
+<!-- ══════════════════════════════════════════ PHASE 0 ══ -->
 <!-- Wird angezeigt, wenn diese Person die Simulation bereits abgeschlossen hat -->
 <div id="phase0" class="phase">
   <div class="intro-card">
     <div class="logo-line">
-      <div class="logo-dot"></div>
       <div class="logo-label">Maturaarbeit · Wissenschaftliche Simulation</div>
     </div>
     <h1>Vielen Dank – du hast bereits <span>teilgenommen</span></h1>
@@ -813,23 +897,38 @@
   </div>
 </div>
 
+<!-- ══════════════════════════════════════════ PHASE 1 ══ -->
 <div id="phase1" class="phase active">
   <div class="intro-card">
     <div class="logo-line">
-      <div class="logo-dot"></div>
       <div class="logo-label">Maturaarbeit · Wissenschaftliche Simulation</div>
     </div>
     <h1>Wie entscheiden Menschen unter Druck im <span>Markthandel</span>?</h1>
     <p>Diese Simulation untersucht, wie <strong>Gier und Angst</strong> das Entscheidungsverhalten von Anlegerinnen und Anlegern beeinflussen – im Rahmen einer Maturaarbeit an der Kantonsschule.</p>
-    <div class="info-box">
-      <strong>🔒 Datenschutz &amp; Anonymität</strong><br>
-      Es werden keine personenbezogenen Daten erhoben. Alle Antworten sind vollständig anonym. Die Teilnahme dauert ca. 8–12 Minuten. Du kannst die Simulation jederzeit abbrechen.
+
+    <p>Du verwaltest ein fiktives Depot. <strong>Zu Beginn besitzt du bereits 50 Aktien</strong> der GlobalTech AG, die du zu je CHF 100 gekauft hast, und zusätzlich <strong>CHF 5'000 Bargeld</strong>.</p>
+    <div class="start-depot">
+      <div class="depot-item">
+        <div class="dl">Bargeld</div>
+        <div class="dv">CHF 5'000</div>
+        <div class="ds">zum Kaufen verfügbar</div>
+      </div>
+      <div class="depot-item">
+        <div class="dl">Aktien GlobalTech AG</div>
+        <div class="dv">50 Stück</div>
+        <div class="ds">bereits gekauft zu je CHF 100</div>
+      </div>
     </div>
-    <p>Du verwaltest ein <strong>fiktives Depot im Wert von CHF 10'000</strong>. Ein Teil davon steckt bereits in Aktien der GlobalTech AG, der Rest ist Bargeld – die genauen Zahlen siehst du jederzeit links in der Simulation. Nach einer kurzen Übungsrunde entscheidest du in <strong>9 Runden</strong>: kaufen, verkaufen oder halten.</p>
+    <p>Weil du schon Aktien besitzt, verändert sich dein Depot mit dem Kurs – <strong>auch wenn du nur hältst</strong>. Nach einer kurzen Übungsrunde entscheidest du in <strong>9 Runden</strong>: kaufen, verkaufen oder halten.</p>
+
     <div class="info-box">
-      <strong>⏱ Gut zu wissen</strong><br>
-      Pro Runde hast du bis zu 2 Minuten Zeit; der Timer läuft oben mit. Am Ende wird dein Depot automatisch bewertet – du musst zum Schluss also nicht extra verkaufen.<br><br>
+      <span class="info-title">Gut zu wissen</span>
+      Pro Runde hast du bis zu 2 Minuten Zeit; der Timer läuft oben mit. Am Ende wird dein Depot automatisch bewertet – du musst zum Schluss also nicht extra verkaufen.
       Es gibt <strong>keine richtigen oder falschen Antworten</strong>. Entscheide so, wie du es in einer echten Situation tun würdest.
+    </div>
+    <div class="info-box">
+      <span class="info-title">Datenschutz &amp; Anonymität</span>
+      Es werden keine personenbezogenen Daten erhoben. Alle Antworten sind vollständig anonym. Die Teilnahme dauert ca. 8–12 Minuten. Du kannst die Simulation jederzeit abbrechen.
     </div>
     <button class="btn-primary" onclick="goPhase(2)">Simulation starten →</button>
   </div>
@@ -839,10 +938,10 @@
 <div id="phase2" class="phase">
   <div class="demo-card">
     <h2>Kurze Angaben zu dir</h2>
-    <p class="sub">Alle Felder sind freiwillig und werden ausschließlich für die wissenschaftliche Auswertung genutzt.</p>
+    <p class="sub">Alle Felder sind freiwillig und werden ausschliesslich für die wissenschaftliche Auswertung genutzt.</p>
 
     <div class="field">
-      <label>Alter <span class="optional-tag">freiwillig</span></label>
+      <label for="d-age">Alter <span class="optional-tag">freiwillig</span></label>
       <select id="d-age">
         <option value="">– bitte wählen –</option>
         <option>unter 18</option>
@@ -854,7 +953,7 @@
       </select>
     </div>
     <div class="field">
-      <label>Geschlecht <span class="optional-tag">freiwillig</span></label>
+      <label for="d-gender">Geschlecht <span class="optional-tag">freiwillig</span></label>
       <select id="d-gender">
         <option value="">– bitte wählen –</option>
         <option>Männlich</option>
@@ -863,7 +962,7 @@
       </select>
     </div>
     <div class="field">
-      <label>Erfahrung mit Aktien / Kryptowährungen</label>
+      <label for="d-exp">Erfahrung mit Aktien / Kryptowährungen</label>
       <select id="d-exp">
         <option value="">– bitte wählen –</option>
         <option>Keine Erfahrung – noch nie damit zu tun gehabt</option>
@@ -891,25 +990,29 @@
 
   <!-- Practice mode banner -->
   <div class="practice-bar" id="practice-bar" style="display:none;">
-    <span>🎓 <strong>Übungsrunde</strong> – probiere Kaufen/Verkaufen/Halten aus, das zählt noch nicht für die Auswertung.</span>
+    <span><strong>Übungsrunde</strong> – probiere Kaufen, Verkaufen oder Halten aus. Das zählt noch nicht für die Auswertung.</span>
     <button class="btn-skip-practice" onclick="skipPractice()">Übung überspringen →</button>
   </div>
 
-  <!-- Portfolio + Price -->
+  <!-- Portfolio + Kurs -->
   <div class="sim-grid">
     <div class="card">
-      <div class="card-label">📊 Dein Portfolio</div>
-      <div class="stat-row"><span class="stat-name">Verfügbares Cash</span><span class="stat-val" id="s-cash">CHF 5'000</span></div>
-      <div class="stat-row"><span class="stat-name">Aktien im Besitz</span><span class="stat-val" id="s-shares">50</span></div>
-      <div class="stat-row"><span class="stat-name">Dein Einstandskurs</span><span class="stat-val" id="s-avg">CHF 100</span></div>
-      <div class="stat-row"><span class="stat-name">Gewinn / Verlust auf Position</span><span class="stat-val" id="s-unreal">CHF 0</span></div>
-      <div class="stat-row"><span class="stat-name">Gesamtwert</span></div>
-      <div class="total-val" id="s-total">CHF 10'000</div>
+      <div class="card-label">Dein Depot</div>
+      <div class="card-hint">Start: CHF 5'000 Bargeld + 50 Aktien, gekauft zu je CHF 100</div>
+      <div class="stat-row"><span class="stat-name">Bargeld</span><span class="stat-val" id="s-cash">CHF 5'000</span></div>
+      <div class="stat-row"><span class="stat-name">Aktien im Besitz</span><span class="stat-val" id="s-shares">50 Stück</span></div>
+      <div class="stat-row"><span class="stat-name">Wert deiner Aktien</span><span class="stat-val" id="s-sharevalue">CHF 5'000</span></div>
+      <div class="stat-row"><span class="stat-name">Einstandskurs (Ø Kaufpreis)</span><span class="stat-val" id="s-avg">CHF 100</span></div>
+      <div class="stat-row"><span class="stat-name">Gewinn / Verlust auf Aktien</span><span class="stat-val" id="s-unreal">CHF 0</span></div>
+      <div class="total-row"><span class="stat-name">Gesamtwert<small>Bargeld + Aktien</small></span><span class="total-val" id="s-total">CHF 10'000</span></div>
     </div>
     <div class="card">
-      <div class="card-label">📈 GlobalTech AG</div>
-      <div class="price-big" id="s-price">CHF 100</div>
-      <div class="price-change grey" id="s-change">— Eröffnungskurs</div>
+      <div class="card-label">GlobalTech AG · Aktienkurs</div>
+      <div class="price-head">
+        <div class="price-big" id="s-price">CHF 100</div>
+        <div class="price-change grey" id="s-change">Eröffnungskurs</div>
+      </div>
+      <div class="chart-wrap" id="price-chart" role="img" aria-label="Kursverlauf der GlobalTech-Aktie"></div>
     </div>
   </div>
 
@@ -927,11 +1030,11 @@
 
   <!-- Actions -->
   <div class="action-area" id="action-area">
-    <div class="action-label">⚡ Deine Entscheidung</div>
+    <div class="action-label">Deine Entscheidung</div>
     <div class="action-btns">
-      <button class="btn-buy"  onclick="openModal('buy')">▲ KAUFEN</button>
-      <button class="btn-sell" onclick="openModal('sell')">▼ VERKAUFEN</button>
-      <button class="btn-hold" onclick="doAction('hold',0)">= HALTEN / WEITER</button>
+      <button class="btn-buy"  onclick="openModal('buy')">Kaufen</button>
+      <button class="btn-sell" onclick="openModal('sell')">Verkaufen</button>
+      <button class="btn-hold" onclick="doAction('hold',0)">Halten / Weiter</button>
     </div>
   </div>
 </div>
@@ -939,14 +1042,18 @@
 <!-- ══════════════════════════════════════════ PHASE 4 ══ -->
 <div id="phase4" class="phase">
   <div class="end-card">
-    <div class="emoji">📋</div>
     <h2>Simulation abgeschlossen</h2>
     <p>Vielen Dank für deine Teilnahme! Deine anonymen Daten helfen dabei, das Entscheidungsverhalten unter Stress besser zu verstehen.</p>
+
+    <div class="end-chart">
+      <div class="card-label">Kursverlauf GlobalTech AG</div>
+      <div class="chart-wrap" id="end-chart" role="img" aria-label="Kompletter Kursverlauf inklusive Schlusskurs"></div>
+    </div>
 
     <div class="result-box" id="result-box"></div>
 
     <div class="info-box" style="text-align:left;">
-      <strong>ℹ️ Auflösung</strong><br>
+      <span class="info-title">Auflösung</span>
       Die GlobalTech AG, sämtliche Kurse, Nachrichten und Angaben über andere Teilnehmende (z.&nbsp;B. «84&nbsp;% haben gekauft») sind <strong>frei erfunden</strong>. Der Kursverlauf war für alle identisch und stand von Anfang an fest – dein Ergebnis sagt nichts über deine Fähigkeiten aus.<br><br>
       Die Runden waren so gebaut, dass sie drei Effekte aus der Verhaltensökonomie sichtbar machen:<br>
       • <strong>Prospect Theory</strong> – bei Gewinnen entscheiden Menschen meist vorsichtig, bei Verlusten risikofreudig, und sehr kleine Wahrscheinlichkeiten werden überschätzt.<br>
@@ -961,11 +1068,11 @@
 
     <!-- FORSCHER-BEREICH – nur sichtbar im Forscher-Modus (siehe ADMIN_CODE) -->
     <div class="researcher-section admin-only">
-      <div class="researcher-label">🔬 Forscher-Bereich</div>
+      <div class="researcher-label">Forscher-Bereich</div>
       <div class="count-badge">Gespeicherte Durchläufe: <span id="run-count">0</span></div>
       <div class="researcher-actions">
-        <button class="btn-csv" onclick="exportCSV()">⬇ CSV herunterladen</button>
-        <button class="btn-clear" onclick="clearData()">🗑 Daten löschen</button>
+        <button class="btn-csv" onclick="exportCSV()">CSV herunterladen</button>
+        <button class="btn-clear" onclick="clearData()">Daten löschen</button>
       </div>
     </div>
   </div>
@@ -979,9 +1086,9 @@
     <div class="modal-row" id="m-limit-row"><span id="m-limit-label">Max. kaufbar:</span><span id="m-limit-val">–</span></div>
 
     <div class="qty-control">
-      <button class="qty-btn" onclick="changeQty(-1)">−</button>
-      <input type="number" class="qty-input" id="qty-input" value="1" min="1" oninput="updateCost()" />
-      <button class="qty-btn" onclick="changeQty(1)">+</button>
+      <button class="qty-btn" onclick="changeQty(-1)" aria-label="weniger">−</button>
+      <input type="number" class="qty-input" id="qty-input" value="1" min="1" inputmode="numeric" oninput="updateCost()" />
+      <button class="qty-btn" onclick="changeQty(1)" aria-label="mehr">+</button>
     </div>
 
     <div class="modal-presets" id="modal-presets"></div>
@@ -1000,12 +1107,21 @@
 <!-- ═══════════════════════════ ÜBERGANG ÜBUNG → SIMULATION ══ -->
 <div class="modal-overlay" id="start-overlay">
   <div class="modal start-modal">
-    <div class="start-emoji">🚦</div>
-    <h3>Übung beendet</h3>
+    <h3>Übung beendet – jetzt zählt es</h3>
     <p class="start-text">
-      Ab jetzt zählt es. Dein Depot wird auf den Ausgangsstand zurückgesetzt,
-      und deine Entscheidungen werden ausgewertet.
+      Dein Depot wird auf den Ausgangsstand zurückgesetzt, und deine Entscheidungen werden ab jetzt ausgewertet. Du startest mit:
     </p>
+    <div class="start-depot">
+      <div class="depot-item">
+        <div class="dl">Bargeld</div>
+        <div class="dv">CHF 5'000</div>
+      </div>
+      <div class="depot-item">
+        <div class="dl">Aktien</div>
+        <div class="dv">50 Stück</div>
+        <div class="ds">gekauft zu je CHF 100</div>
+      </div>
+    </div>
     <p class="start-text">
       Es folgen <strong>9 Runden</strong>. Es gibt keine richtigen oder falschen
       Antworten – entscheide so, wie du es wirklich tun würdest.
@@ -1276,7 +1392,7 @@ function resetSim() {
 function showPracticeRound() {
   const r = PRACTICE_ROUND;
 
-  document.getElementById("round-label").textContent = "🎓 Übungsrunde";
+  document.getElementById("round-label").textContent = "Übungsrunde";
   document.getElementById("practice-bar").style.display = "flex";
 
   const nb = document.getElementById("news-box");
@@ -1287,7 +1403,7 @@ function showPracticeRound() {
 
   document.getElementById("s-price").textContent = fmt(r.price);
   const chEl = document.getElementById("s-change");
-  chEl.textContent = "— Übungskurs, zählt nicht";
+  chEl.textContent = "Übungskurs, zählt nicht";
   chEl.className = "price-change grey";
 
   document.getElementById("choice-box").style.display = "none";
@@ -1351,7 +1467,7 @@ function nextRound() {
   document.getElementById("s-price").textContent = fmt(r.price);
   const chEl = document.getElementById("s-change");
   if (pct === null) {
-    chEl.textContent = "— Eröffnungskurs";
+    chEl.textContent = "Eröffnungskurs";
     chEl.className = "price-change grey";
   } else {
     const sign = pct >= 0 ? "+" : "";
@@ -1447,7 +1563,7 @@ function updateTimer() {
   const pct = (timerLeft / currentRoundTime) * 100;
   const bar = document.getElementById("timer-bar");
   bar.style.width = pct + "%";
-  bar.style.background = pct > 50 ? "var(--warn)" : pct > 20 ? "#f97316" : "var(--danger)";
+  bar.style.background = pct > 25 ? "var(--faint)" : pct > 10 ? "var(--warn)" : "var(--danger)";
 }
 
 /* ─── ACTIONS ───────────────────────────────────────────── */
@@ -1461,11 +1577,11 @@ function doAction(type, qty, reactionTime, forcedKey) {
       state.avgCost = (state.avgCost * state.shares + qty * r.price) / (state.shares + qty);
       state.cash -= qty * r.price;
       state.shares += qty;
-      showToast(`✅ (Übung) Gekauft: ${qty} Aktie(n) à ${fmt(r.price)}`, "t-green");
+      showToast(`Übung: ${qty} Aktie(n) gekauft à ${fmt(r.price)}`, "t-green");
     } else if (type === "sell" && qty > 0) {
       state.cash += qty * r.price;
       state.shares -= qty;
-      showToast(`💸 (Übung) Verkauft: ${qty} Aktie(n) à ${fmt(r.price)}`, "t-red");
+      showToast(`Übung: ${qty} Aktie(n) verkauft à ${fmt(r.price)}`, "t-red");
     } else {
       showToast("Übung beendet – so funktioniert Halten.", "t-green");
     }
@@ -1493,15 +1609,15 @@ function doAction(type, qty, reactionTime, forcedKey) {
     state.avgCost = (state.avgCost * state.shares + qty * r.price) / (state.shares + qty);
     state.cash   -= qty * r.price;
     state.shares += qty;
-    showToast(`✅ Gekauft: ${qty} Aktie(n) à ${fmt(r.price)}`, "t-green");
+    showToast(`${qty} Aktie(n) gekauft à ${fmt(r.price)}`, "t-green");
   } else if (type === "sell" && qty > 0) {
     realizedThisRound = qty * (r.price - state.avgCost);
     state.realized += realizedThisRound;
     state.cash   += qty * r.price;
     state.shares -= qty;
-    showToast(`💸 Verkauft: ${qty} Aktie(n) à ${fmt(r.price)}`, "t-red");
+    showToast(`${qty} Aktie(n) verkauft à ${fmt(r.price)}`, "t-red");
   } else {
-    if (type === "timeout") showToast("⏰ Zeit abgelaufen – Entscheidung: Halten", "t-red");
+    if (type === "timeout") showToast("Zeit abgelaufen – Entscheidung: Halten", "t-red");
   }
 
   let actionLabel;
@@ -1561,7 +1677,8 @@ function updateUI() {
   const r = state.practice ? PRACTICE_ROUND : ROUNDS[Math.min(state.round, ROUNDS.length - 1)];
   const total = state.cash + state.shares * r.price;
   document.getElementById("s-cash").textContent   = fmt(state.cash);
-  document.getElementById("s-shares").textContent = state.shares;
+  document.getElementById("s-shares").textContent = state.shares + " Stück";
+  document.getElementById("s-sharevalue").textContent = fmt(state.shares * r.price);
   document.getElementById("s-total").textContent  = fmt(total);
 
   // Referenzpunkt sichtbar machen – ohne sichtbaren Einstandskurs
@@ -1576,14 +1693,173 @@ function updateUI() {
     unEl.style.color  = u > 0 ? "var(--green)" : u < 0 ? "var(--danger)" : "var(--muted)";
   } else {
     avgEl.textContent = "–";
-    unEl.textContent  = "keine Position";
+    unEl.textContent  = "keine Aktien";
     unEl.style.color  = "var(--muted)";
   }
+
+  renderPriceChart();
 }
 
 function fmt(n) {
-  return n.toLocaleString("de-CH", { style: "currency", currency: "CHF", maximumFractionDigits: 2 });
+  const cents = Math.round(n * 100) % 100 !== 0;
+  return n.toLocaleString("de-CH", {
+    style: "currency", currency: "CHF",
+    minimumFractionDigits: cents ? 2 : 0, maximumFractionDigits: 2
+  });
 }
+
+/* ─── KURSCHART ─────────────────────────────────────────────
+   Zeigt nur Kurse, die bereits bekannt sind – zukuenftige Runden
+   bleiben leer, damit das Chart nichts vorwegnimmt. Die gestrichelte
+   Linie ist der eigene Einstandskurs (der Referenzpunkt).          */
+const SVG_NS = "http://www.w3.org/2000/svg";
+
+function svgEl(tag, attrs, parent) {
+  const e = document.createElementNS(SVG_NS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(e);
+  return e;
+}
+
+function niceStep(raw) {
+  const p = Math.pow(10, Math.floor(Math.log10(raw)));
+  const n = raw / p;
+  return (n <= 1 ? 1 : n <= 2 ? 2 : n <= 5 ? 5 : 10) * p;
+}
+
+/* el     – Container
+   ticks  – Beschriftung jeder x-Position (z.B. R1 … R9)
+   points – bekannte Kurse [{price, name}], belegen die ersten Positionen
+   ref    – Referenzlinie (Einstandskurs) oder null
+   refLabel – Legendentext der Referenzlinie                           */
+function renderChart(el, ticks, points, ref, refLabel) {
+  if (!el) return;
+  el._chart = [ticks, points, ref, refLabel];
+  const W = el.clientWidth;
+  if (!W) return; // Container (noch) unsichtbar
+  const H = W > 420 ? 200 : 170;
+  const m = { t: 12, r: 16, b: 24, l: 40 };
+
+  const vals = points.map(p => p.price).concat(ref != null ? [ref] : []);
+  let lo = Math.min.apply(null, vals), hi = Math.max.apply(null, vals);
+  const span = Math.max(hi - lo, 40);
+  const step = niceStep(span / 3);
+  lo = Math.max(0, Math.floor((lo - span * .08) / step) * step);
+  hi = Math.ceil((hi + span * .08) / step) * step;
+
+  const n  = ticks.length;
+  const iw = W - m.l - m.r, ih = H - m.t - m.b;
+  const x = i => m.l + (n === 1 ? iw / 2 : i * iw / (n - 1));
+  const y = v => m.t + (hi - v) / (hi - lo) * ih;
+
+  el.innerHTML = "";
+  const svg = svgEl("svg", { viewBox: `0 0 ${W} ${H}`, height: H });
+
+  // Gitterlinien + y-Achse
+  for (let v = lo; v <= hi + 1e-9; v += step) {
+    svgEl("line", { x1: m.l, x2: W - m.r, y1: y(v), y2: y(v),
+      stroke: "var(--chart-grid)", "stroke-width": 1 }, svg);
+    const t = svgEl("text", { x: m.l - 8, y: y(v) + 4, "text-anchor": "end", class: "axis-text" }, svg);
+    t.textContent = Math.round(v);
+  }
+  // x-Achse
+  ticks.forEach((lbl, i) => {
+    const t = svgEl("text", { x: x(i), y: H - 6, "text-anchor": "middle", class: "axis-text" }, svg);
+    t.textContent = lbl;
+  });
+
+  // Einstandskurs (Referenzpunkt)
+  if (ref != null) {
+    svgEl("line", { x1: m.l, x2: W - m.r, y1: y(ref), y2: y(ref),
+      stroke: "var(--muted)", "stroke-width": 1.5, "stroke-dasharray": "5 4" }, svg);
+  }
+
+  // Fläche + Linie
+  if (points.length > 1) {
+    const d = points.map((p, i) => (i ? "L" : "M") + x(i) + " " + y(p.price)).join(" ");
+    svgEl("path", { d: d + ` L${x(points.length - 1)} ${y(lo)} L${x(0)} ${y(lo)} Z`,
+      fill: "var(--chart-line)", "fill-opacity": .1, stroke: "none" }, svg);
+    svgEl("path", { d, fill: "none", stroke: "var(--chart-line)", "stroke-width": 2,
+      "stroke-linejoin": "round", "stroke-linecap": "round" }, svg);
+  }
+  // Endpunkt (aktueller Kurs)
+  const last = points.length - 1;
+  svgEl("circle", { cx: x(last), cy: y(points[last].price), r: 4.5,
+    fill: "var(--chart-line)", stroke: "var(--surface)", "stroke-width": 2 }, svg);
+
+  // Hover / Antippen: Fadenkreuz + Tooltip
+  const cross = svgEl("line", { y1: m.t, y2: m.t + ih, stroke: "var(--faint)",
+    "stroke-width": 1, visibility: "hidden" }, svg);
+  const dot = svgEl("circle", { r: 4.5, fill: "var(--chart-line)", stroke: "var(--surface)",
+    "stroke-width": 2, visibility: "hidden" }, svg);
+  const hit = svgEl("rect", { x: 0, y: 0, width: W, height: H, fill: "transparent" }, svg);
+  el.appendChild(svg);
+
+  const tip = document.createElement("div");
+  tip.className = "chart-tip";
+  el.appendChild(tip);
+
+  function show(evt) {
+    const bx = svg.getBoundingClientRect();
+    const px = (evt.clientX - bx.left) * (W / bx.width);
+    let i = n === 1 ? 0 : Math.round((px - m.l) / (iw / (n - 1)));
+    i = Math.max(0, Math.min(points.length - 1, i));
+    const p = points[i];
+    cross.setAttribute("x1", x(i)); cross.setAttribute("x2", x(i));
+    dot.setAttribute("cx", x(i)); dot.setAttribute("cy", y(p.price));
+    cross.setAttribute("visibility", "visible"); dot.setAttribute("visibility", "visible");
+    tip.textContent = p.name + " · " + fmt(p.price);
+    tip.style.left = Math.max(60, Math.min(W - 60, x(i))) + "px";
+    tip.style.top  = y(p.price) + "px";
+    tip.classList.add("show");
+  }
+  function hide() {
+    cross.setAttribute("visibility", "hidden"); dot.setAttribute("visibility", "hidden");
+    tip.classList.remove("show");
+  }
+  hit.addEventListener("pointermove", show);
+  hit.addEventListener("pointerdown", show);
+  hit.addEventListener("pointerleave", hide);
+
+  // Legende (nur wenn es eine Referenzlinie gibt, sonst reicht der Titel)
+  if (ref != null) {
+    const lg = document.createElement("div");
+    lg.className = "chart-legend";
+    lg.innerHTML = '<span><i></i>Kurs</span><span><i class="ref"></i>' + refLabel + " (" + fmt(ref) + ")</span>";
+    el.appendChild(lg);
+  }
+}
+
+function renderPriceChart() {
+  const el  = document.getElementById("price-chart");
+  const ref = state.shares > 0 ? state.avgCost : null;
+  if (state.practice) {
+    renderChart(el, ["Übung"], [{ price: PRACTICE_ROUND.price, name: "Übungsrunde" }], ref, "Dein Einstandskurs");
+    return;
+  }
+  const upto = Math.min(Math.max(state.round, 0), ROUNDS.length - 1);
+  const pts  = ROUNDS.slice(0, upto + 1).map(r => ({ price: r.price, name: "Runde " + r.round }));
+  renderChart(el, ROUNDS.map(r => "R" + r.round), pts, ref, "Dein Einstandskurs");
+}
+
+function renderEndChart() {
+  const pts = ROUNDS.map(r => ({ price: r.price, name: "Runde " + r.round }))
+    .concat([{ price: FINAL_PRICE, name: "Schlusskurs" }]);
+  renderChart(document.getElementById("end-chart"),
+    ROUNDS.map(r => "R" + r.round).concat(["Ende"]), pts, START_PRICE, "Kaufkurs Startdepot");
+}
+
+// Bei Grössenänderung (z.B. Handy drehen) neu zeichnen
+let chartResize;
+window.addEventListener("resize", () => {
+  clearTimeout(chartResize);
+  chartResize = setTimeout(() => {
+    ["price-chart", "end-chart"].forEach(id => {
+      const el = document.getElementById(id);
+      if (el && el._chart) renderChart.apply(null, [el].concat(el._chart));
+    });
+  }, 150);
+});
 
 /* ─── MODAL ─────────────────────────────────────────────── */
 let tradeStartTime;
@@ -1697,18 +1973,20 @@ async function endSim() {
   // Result summary
   const rb = document.getElementById("result-box");
   rb.innerHTML = `
-    <div class="result-row"><span class="rl">Startdepot (${START_SHARES} Aktien + Cash)</span><span class="rv">${fmt(START_TOTAL)}</span></div>
+    <div class="result-row"><span class="rl">Start: Bargeld</span><span class="rv">${fmt(START_CASH)}</span></div>
+    <div class="result-row"><span class="rl">Start: ${START_SHARES} Aktien × ${fmt(START_PRICE)}</span><span class="rv">${fmt(START_SHARES * START_PRICE)}</span></div>
     <div class="result-row"><span class="rl">Schlusskurs nach der letzten Runde</span><span class="rv">${fmt(finalPrice)}</span></div>
-    <div class="result-row"><span class="rl">Verbleibendes Cash</span><span class="rv">${fmt(state.cash)}</span></div>
-    <div class="result-row"><span class="rl">Aktien (${state.shares} × ${fmt(finalPrice)})</span><span class="rv">${fmt(state.shares * finalPrice)}</span></div>
-    <div class="result-row"><span class="rl">Gesamtwert</span><span class="rv">${fmt(finalTotal)}</span></div>
-    <div class="result-row"><span class="rl">Gewinn / Verlust</span><span class="rv ${pnl >= 0 ? 'pos' : 'neg'}">${pnl >= 0 ? '+' : ''}${fmt(pnl)}</span></div>
+    <div class="result-row"><span class="rl">Ende: Bargeld</span><span class="rv">${fmt(state.cash)}</span></div>
+    <div class="result-row"><span class="rl">Ende: ${state.shares} Aktien × ${fmt(finalPrice)}</span><span class="rv">${fmt(state.shares * finalPrice)}</span></div>
+    <div class="result-row strong"><span class="rl">Gesamtwert am Ende</span><span class="rv">${fmt(finalTotal)}</span></div>
+    <div class="result-row strong"><span class="rl">Gewinn / Verlust gegenüber Start</span><span class="rv ${pnl >= 0 ? 'pos' : 'neg'}">${pnl >= 0 ? '+' : ''}${fmt(pnl)}</span></div>
   `;
 
   // Save to localStorage (als abgeschlossen markiert)
   saveSession(true);
   markCompleted();
   goPhase(4);
+  renderEndChart();
 
   // Direkt an Web3Forms senden
   await sendData();
@@ -1857,22 +2135,22 @@ async function sendData() {
   const ss = document.getElementById("send-status");
   if (!WEB3FORMS_KEY || WEB3FORMS_KEY === "DEIN_WEB3FORMS_KEY_HIER") {
     ss.className = "send-status err";
-    ss.textContent = "⚠️ Kein Web3Forms-Key eingetragen – Daten nur lokal gespeichert.";
+    ss.textContent = "Kein Web3Forms-Key eingetragen – Daten nur lokal gespeichert.";
     return;
   }
 
   ss.className = "send-status sending";
-  ss.textContent = "📡 Daten werden gesendet…";
+  ss.textContent = "Daten werden gesendet …";
 
   const payload = buildPayload("complete");
   try {
     await postWithRetry(payload);
     ss.className = "send-status ok";
-    ss.textContent = "✅ Daten erfolgreich übermittelt. Danke!";
+    ss.textContent = "Daten erfolgreich übermittelt. Danke!";
   } catch (e) {
     setPending(getPending().concat([payload]));
     ss.className = "send-status err";
-    ss.innerHTML = "⚠️ Die Übertragung hat nicht geklappt. Deine Antworten sind gespeichert und werden beim nächsten Öffnen der Seite automatisch nachgesendet."
+    ss.innerHTML = "Die Übertragung hat nicht geklappt. Deine Antworten sind gespeichert und werden beim nächsten Öffnen der Seite automatisch nachgesendet."
       + '<span class="detail">Grund: ' + String(e && e.message ? e.message : e).replace(/</g, "&lt;") + '</span>';
   }
 }
@@ -1934,14 +2212,14 @@ function exportCSV() {
   a.download = `matura_sim_export_${new Date().toISOString().slice(0,10)}.csv`;
   a.click();
   URL.revokeObjectURL(url);
-  showToast("✅ CSV heruntergeladen!", "t-green");
+  showToast("CSV heruntergeladen.", "t-green");
 }
 
 function clearData() {
   if (!confirm("Wirklich alle lokal gespeicherten Daten löschen?")) return;
   localStorage.removeItem("matura_sim");
   updateRunCount();
-  showToast("🗑 Daten gelöscht.", "t-red");
+  showToast("Daten gelöscht.", "t-red");
 }
 
 /* ─── TOAST ─────────────────────────────────────────────── */
