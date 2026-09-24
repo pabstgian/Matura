@@ -151,6 +151,37 @@
     margin-bottom: .25rem;
   }
 
+  /* Kurzfassung auf der Startseite */
+  .intro-card p.lead { font-size: 1.02rem; margin-bottom: 1.3rem; }
+  .section-label {
+    font-size: .8rem;
+    font-weight: 600;
+    color: var(--muted);
+    margin-bottom: .5rem;
+  }
+  .intro-card .start-depot { margin: 0 0 1.2rem; }
+  .key-list {
+    list-style: none;
+    margin: 0 0 1rem;
+    font-size: .95rem;
+    color: var(--muted);
+  }
+  .key-list li {
+    position: relative;
+    padding: .5rem 0 .5rem 1.1rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .key-list li:last-child { border-bottom: none; }
+  .key-list li::before {
+    content: "";
+    position: absolute;
+    left: 0; top: 1.05rem;
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+  .key-list strong { color: var(--text); }
+
   /* Startdepot-Übersicht (Intro + Übergangsfenster) */
   .start-depot {
     display: grid;
@@ -904,32 +935,29 @@
       <div class="logo-label">Maturaarbeit · Wissenschaftliche Simulation</div>
     </div>
     <h1>Wie entscheiden Menschen unter Druck im <span>Markthandel</span>?</h1>
-    <p>Diese Simulation untersucht, wie <strong>Gier und Angst</strong> das Entscheidungsverhalten von Anlegerinnen und Anlegern beeinflussen – im Rahmen einer Maturaarbeit an der Kantonsschule.</p>
+    <p class="lead">Wie beeinflussen <strong>Gier und Angst</strong> deine Entscheidungen an der Börse?</p>
 
-    <p>Du verwaltest ein fiktives Depot. <strong>Zu Beginn besitzt du bereits 50 Aktien</strong> der GlobalTech AG, die du zu je CHF 100 gekauft hast, und zusätzlich <strong>CHF 5'000 Bargeld</strong>.</p>
+    <div class="section-label">Dein Startdepot</div>
     <div class="start-depot">
       <div class="depot-item">
         <div class="dl">Bargeld</div>
         <div class="dv">CHF 5'000</div>
-        <div class="ds">zum Kaufen verfügbar</div>
       </div>
       <div class="depot-item">
-        <div class="dl">Aktien GlobalTech AG</div>
+        <div class="dl">Aktien</div>
         <div class="dv">50 Stück</div>
-        <div class="ds">bereits gekauft zu je CHF 100</div>
+        <div class="ds">gekauft zu je CHF 100</div>
       </div>
     </div>
-    <p>Weil du schon Aktien besitzt, verändert sich dein Depot mit dem Kurs – <strong>auch wenn du nur hältst</strong>. Nach einer kurzen Übungsrunde entscheidest du in <strong>9 Runden</strong>: kaufen, verkaufen oder halten.</p>
 
-    <div class="info-box">
-      <span class="info-title">Gut zu wissen</span>
-      Pro Runde hast du bis zu 2 Minuten Zeit; der Timer läuft oben mit. Am Ende wird dein Depot automatisch bewertet – du musst zum Schluss also nicht extra verkaufen.
-      Es gibt <strong>keine richtigen oder falschen Antworten</strong>. Entscheide so, wie du es in einer echten Situation tun würdest.
-    </div>
-    <div class="info-box">
-      <span class="info-title">Datenschutz &amp; Anonymität</span>
-      Es werden keine personenbezogenen Daten erhoben. Alle Antworten sind vollständig anonym. Die Teilnahme dauert ca. 8–12 Minuten. Du kannst die Simulation jederzeit abbrechen.
-    </div>
+    <ul class="key-list">
+      <li>Übungsrunde, danach <strong>9 Runden</strong></li>
+      <li>Jede Runde: <strong>kaufen, verkaufen oder halten</strong></li>
+      <li>Max. 2 Minuten pro Runde</li>
+      <li>Dein Depot ändert sich mit dem Kurs – auch beim Halten</li>
+      <li>Keine richtigen oder falschen Antworten</li>
+      <li>Anonym · ca. 8–12 Minuten</li>
+    </ul>
     <button class="btn-primary" onclick="goPhase(2)">Simulation starten →</button>
   </div>
 </div>
